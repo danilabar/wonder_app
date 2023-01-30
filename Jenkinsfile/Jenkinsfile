@@ -1,0 +1,44 @@
+#!groovy
+// Run docker build
+properties([disableConcurrentBuilds()])
+
+pipeline {
+    agent {
+        label 'built-in'
+        }
+    triggers { pollSCM('* * * * *') }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        timestamps()
+    }
+    stages {
+        stage("docker login") {
+            steps {
+                echo " ============== docker login =================="
+                withCredentials([usernamePassword(credentialsId: 'docker_cred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh """
+                    docker login -u $USERNAME --password $PASSWORD
+                    """
+                }
+            }
+        }
+        stage("create docker image") {
+            steps {
+                echo " ============== start building image =================="
+                dir ('.') {
+                	sh """
+                    docker build -t $DOCKER_REPO_NAME/wonder_app:$BUILD_TAG_NAME .
+                    """
+                }
+            }
+        }
+        stage("docker push") {
+            steps {
+                echo " ============== start pushing image =================="
+                sh """
+                docker push $DOCKER_REPO_NAME/wonder_app:$BUILD_TAG_NAME
+                """
+            }
+        }
+    }
+}
