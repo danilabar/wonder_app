@@ -1,6 +1,8 @@
 #!groovy
 // Run docker build
 properties([disableConcurrentBuilds()])
+env.BUILD_TAG_NAME = '0.1.$BUILD_ID'
+env.DOCKER_REPO_NAME = 'danilabar'
 
 pipeline {
     agent {
