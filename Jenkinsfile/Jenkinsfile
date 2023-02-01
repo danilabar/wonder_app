@@ -1,0 +1,72 @@
+pipeline {
+    agent {
+        label 'built-in'
+        }
+    triggers { pollSCM('* * * * *') }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        timestamps()
+    }
+    environment {
+    BUILD_TAG_NAME = '0.1.$BUILD_ID'
+    DOCKER_REPO_NAME = 'danilabar'
+    CHART_NAME = 'wonder-app-chart'
+    LATEST_BUILD_TAG_NAME = 'latest'
+    }
+    stages {
+        stage("docker login") {
+            steps {
+                echo " ============== docker login =================="
+                withCredentials([usernamePassword(credentialsId: 'docker_cred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh """
+                    docker login -u $USERNAME --password $PASSWORD
+                    """
+                }
+            }
+        }
+        stage("checkout") {
+            steps {
+                checkout scm
+                }
+            }
+        }
+        stage("create docker image") {
+            steps {
+                echo " ============== start building image =================="
+                dir ('.') {
+                	sh """
+                    docker build -t $DOCKER_REPO_NAME/wonder_app:$BUILD_TAG_NAME .
+                    """
+                }
+            }
+        }
+        stage("create docker image latest") {
+            when { buildingTag() }
+            steps {
+                echo " ============== start building image =================="
+                dir ('.') {
+                	sh """
+                    docker build -t $DOCKER_REPO_NAME/wonder_app:$LATEST_BUILD_TAG_NAME .
+                    """
+                }
+            }
+        }
+        stage("docker push") {
+            steps {
+                echo " ============== start pushing image =================="
+                sh """
+                docker push -a $DOCKER_REPO_NAME/wonder_app
+                """
+            }
+        }
+        stage("deploy app") {
+            when { buildingTag() }
+            steps {
+                echo " ============== start k8s deploy =================="
+                sh """
+                helm upgrade $JOB_NAME $CHART_NAME --set image_frontend.tag=$BUILD_TAG_NAME --install
+                """
+            }
+        }
+    }
+}
