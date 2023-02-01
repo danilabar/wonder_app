@@ -51,7 +51,7 @@ pipeline {
             steps {
                 echo " ============== start pushing image =================="
                 sh """
-                docker push -a $DOCKER_REPO_NAME/wonder_app:$BUILD_TAG_NAME
+                docker push -a $DOCKER_REPO_NAME/wonder_app
                 """
             }
         }
