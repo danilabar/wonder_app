@@ -44,7 +44,7 @@ pipeline {
             }
         }
         stage("deploy app") {
-            when { tag "*" }
+            when { buildingTag() }
             steps {
                 echo " ============== start k8s deploy =================="
                 sh """
