@@ -3,6 +3,7 @@
 properties([disableConcurrentBuilds()])
 env.BUILD_TAG_NAME = '0.1.$BUILD_ID'
 env.DOCKER_REPO_NAME = 'danilabar'
+env.CHART_NAME = 'wonder-app-chart'
 
 pipeline {
     agent {
@@ -39,6 +40,15 @@ pipeline {
                 echo " ============== start pushing image =================="
                 sh """
                 docker push $DOCKER_REPO_NAME/wonder_app:$BUILD_TAG_NAME
+                """
+            }
+        }
+        stage("deploy app") {
+            when { tag "*" }
+            steps {
+                echo " ============== start k8s deploy =================="
+                sh """
+                helm upgrade $JOB_NAME $CHART_NAME --set image_frontend.tag=$BUILD_TAG_NAME --install
                 """
             }
         }
