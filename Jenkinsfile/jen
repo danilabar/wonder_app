@@ -10,8 +10,6 @@ pipeline {
                 echo 'Hello World'
             }
         }
-    }
-    stages {
         stage("checkout") {
             steps {
                 checkout scm
