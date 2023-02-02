@@ -62,7 +62,7 @@ pipeline {
             when { buildingTag() }
             steps {
                 sh """
-                helm upgrade app-prod wonder-app-chart --set image_frontend.tag=$LATEST_BUILD_TAG_NAME --install
+                helm upgrade app-prod wonder-app-chart -n=default --set image_frontend.tag=$LATEST_BUILD_TAG_NAME --install
                 """
             }
         }
