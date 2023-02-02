@@ -52,7 +52,13 @@ pipeline {
                 docker push -a $IMAGE_BASE
                 """
             }
-            sh "docker rmi $(docker images -a -q)"
+        }
+        stage("docker clear images") {
+            steps {
+                sh """
+                docker rmi $(docker images -a -q)
+                """
+            }
         }
         stage("deploy app") {
             when { buildingTag() }
