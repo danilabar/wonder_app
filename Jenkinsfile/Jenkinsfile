@@ -11,14 +11,15 @@ pipeline {
     }
     environment {
     BUILD_TAG_NAME = '0.1.$BUILD_ID'
+    IMAGE_BASE = "danilabar/wonder_app"
     DOCKER_REPO_NAME = 'danilabar'
+    IMAGE_NAME = "wonder_app"
     CHART_NAME = 'wonder-app-chart'
     LATEST_BUILD_TAG_NAME = 'latest'
     }
     stages {
         stage("docker login") {
             steps {
-                echo " ============== docker login =================="
                 withCredentials([usernamePassword(credentialsId: 'docker_cred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh """
                     docker login -u $USERNAME --password $PASSWORD
@@ -26,17 +27,11 @@ pipeline {
                 }
             }
         }
-        stage("checkout") {
-            steps {
-                checkout scm
-            }
-        }
         stage("create docker image") {
             steps {
-                echo " ============== start building image =================="
                 dir ('.') {
                 	sh """
-                    docker build -t $DOCKER_REPO_NAME/wonder_app:$BUILD_TAG_NAME .
+                    docker build -t $IMAGE_BASE:$BUILD_TAG_NAME .
                     """
                 }
             }
@@ -44,26 +39,24 @@ pipeline {
         stage("create docker image latest") {
             when { buildingTag() }
             steps {
-                echo " ============== start building image =================="
                 dir ('.') {
                 	sh """
-                    docker build -t $DOCKER_REPO_NAME/wonder_app:$LATEST_BUILD_TAG_NAME .
+                    docker build -t $IMAGE_BASE:$LATEST_BUILD_TAG_NAME .
                     """
                 }
             }
         }
         stage("docker push") {
             steps {
-                echo " ============== start pushing image =================="
                 sh """
-                docker push -a $DOCKER_REPO_NAME/wonder_app
+                docker push -a $IMAGE_BASE
                 """
             }
+            sh "docker rmi $(docker images -a -q)"
         }
         stage("deploy app") {
             when { buildingTag() }
             steps {
-                echo " ============== start k8s deploy =================="
                 sh """
                 helm upgrade $JOB_NAME $CHART_NAME --set image_frontend.tag=$BUILD_TAG_NAME --install
                 """
