@@ -61,11 +61,9 @@ pipeline {
         stage("deploy app") {
             when { buildingTag() }
             steps {
-                dir ('.') {
-                    sh """
-                    helm upgrade app-prod wonder-app-chart --set image_frontend.tag=$LATEST_BUILD_TAG_NAME --install
-                    """
-                }
+                sh """
+                helm upgrade app-prod wonder-app-chart --set image_frontend.tag=$LATEST_BUILD_TAG_NAME --install
+                """
             }
         }
     }
