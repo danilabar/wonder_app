@@ -3,6 +3,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 <head>
 <title>Дипломный практикум в Yandex.Cloud</title>
+<link rel="import" href="/version.html">
 <style>
     body {
         width: 35em;
@@ -14,6 +15,13 @@
 <body>
 <h1>Дипломный практикум в Yandex.Cloud</h1>
 <img src="main_img.jpg" name="Нетология" align="center" width="600" height="531"  border="0"/>
-<p>Тестовое приложение дипломного практикума в Yandex.Cloud. v.0.1.1</p>
+<p>Тестовое приложение дипломного практикума в Yandex.Cloud.</p>
+
+    <script>
+      var link = document.querySelector('link[rel=import]');
+      var content = link.import.querySelector('#version');
+      document.body.appendChild(content.cloneNode(true));
+    </script>
+
 </body>
 </html>
