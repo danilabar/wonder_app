@@ -62,7 +62,7 @@ pipeline {
             when { buildingTag() }
             steps {
                 sh """
-                helm upgrade $JOB_BASE_NAME $CHART_NAME --set image_frontend.tag=$LATEST_BUILD_TAG_NAME --install
+                helm upgrade app-prod --set image_frontend.tag=$LATEST_BUILD_TAG_NAME --install
                 """
             }
         }
