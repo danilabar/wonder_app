@@ -55,9 +55,7 @@ pipeline {
         }
         stage("docker clear images") {
             steps {
-                sh """
-                'docker rmi $(docker images -a -q)'
-                """
+                sh 'docker rmi $(docker images -a -q)'
             }
         }
         stage("deploy app") {
