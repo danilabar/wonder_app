@@ -4,7 +4,7 @@ pipeline {
     agent {
         label 'built-in'
         }
-//    triggers { pollSCM('* * * * *') }
+   triggers { pollSCM('H/3 * * * *') }
     options {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         timestamps()
@@ -18,11 +18,11 @@ pipeline {
 //    LATEST_BUILD_TAG_NAME = 'latest'
     }
     stages {
-        stage("Preparations") {
-			steps {
-				deleteDir() /* clean up our workspace */
-			}
-		}
+//         stage("Preparations") {
+// 			steps {
+// 				deleteDir() /* clean up our workspace */
+// 			}
+// 		}
 //         stage("Checkout") {
 // 			steps {
 // 				checkout scm
