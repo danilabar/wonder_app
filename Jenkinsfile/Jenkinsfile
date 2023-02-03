@@ -27,7 +27,7 @@ pipeline {
             }
         }
         stage("Create Docker Image") {
-            when { triggeredBy 'SCMTrigger'; cause: "UserIdCause", detail: "*" }
+            when { triggeredBy 'SCMTrigger'; cause: "UserIdCause", detail: "admin" }
             steps {
                 dir ('.') {
                 	sh """
