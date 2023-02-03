@@ -59,7 +59,7 @@ pipeline {
         stage("Docker Push") {
             steps {
                 sh """
-                docker push -t $IMAGE_BASE:$BUILD_TAG_NAME
+                docker push $IMAGE_BASE:$BUILD_TAG_NAME
                 """
             }
         }
@@ -68,7 +68,7 @@ pipeline {
             steps {
                 dir ('.') {
                 	sh """
-                    docker push -t $IMAGE_BASE:$TAG_NAME
+                    docker push $IMAGE_BASE:$TAG_NAME
                     """
                 }
             }
