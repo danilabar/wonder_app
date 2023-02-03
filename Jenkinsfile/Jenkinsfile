@@ -15,19 +15,8 @@ pipeline {
     DOCKER_REPO_NAME = 'danilabar'
     IMAGE_NAME = "wonder_app"
     CHART_NAME = 'wonder-app-chart'
-//    LATEST_BUILD_TAG_NAME = 'latest'
     }
     stages {
-//         stage("Preparations") {
-// 			steps {
-// 				deleteDir() /* clean up our workspace */
-// 			}
-// 		}
-//         stage("Checkout") {
-// 			steps {
-// 				checkout scm
-// 			}
-// 		}
         stage("Docker Login") {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker_cred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
@@ -75,11 +64,6 @@ pipeline {
                 }
             }
         }
-//        stage("docker clear images") {
-//            steps {
-//                sh 'docker rmi -f $(docker images -a -q)'
-//            }
-//        }
         stage("Deploy App") {
             when { buildingTag() }
             steps {
