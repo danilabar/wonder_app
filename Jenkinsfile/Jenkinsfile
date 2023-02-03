@@ -23,11 +23,11 @@ pipeline {
 				deleteDir() /* clean up our workspace */
 			}
 		}
-        stage("Checkout") {
-			steps {
-				checkout scm
-			}
-		}
+//         stage("Checkout") {
+// 			steps {
+// 				checkout scm
+// 			}
+// 		}
         stage("Docker Login") {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker_cred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
