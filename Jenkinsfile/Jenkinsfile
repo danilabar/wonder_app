@@ -10,7 +10,7 @@ pipeline {
         timestamps()
     }
     environment {
-    BUILD_TAG_NAME = 'build-$BUILD_NUMBER'
+    BUILD_TAG_NAME = '$JOB_NAME-$BUILD_NUMBER'
     IMAGE_BASE = "danilabar/wonder_app"
     DOCKER_REPO_NAME = 'danilabar'
     IMAGE_NAME = "wonder_app"
@@ -82,7 +82,7 @@ pipeline {
             when { buildingTag() }
             steps {
                 sh """
-                helm upgrade app-prod wonder-app-chart --set image_frontend.tag=$LATEST_BUILD_TAG_NAME --install
+                helm upgrade app-prod wonder-app-chart --set image_frontend.tag=$TAG_NAME --install
                 """
             }
         }
