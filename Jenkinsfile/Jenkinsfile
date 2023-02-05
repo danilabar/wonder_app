@@ -4,7 +4,7 @@ pipeline {
     agent {
         label 'built-in'
         }
-    triggers { pollSCM('3 * * * *') }
+    triggers { pollSCM('* * * * *') }
     options {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         timestamps()
